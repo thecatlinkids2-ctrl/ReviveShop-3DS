@@ -1,0 +1,19 @@
+Option:
+  MediaSize: 1024 # Standard allocation block flags
+
+SystemControlInfo:
+  # Unique Title ID for your homebrew package (must start with 00040000)
+  TitleId: 000400000FF10000 
+  
+  # Product Code must match the formatting structure CTR-N-XXXX
+  ProductCode: CTR-N-RSHP
+  
+  CoreVersion: 2
+  JumpId: 000400000FF10000
+
+AccessControlInfo:
+  # Gives the application permission to talk directly to your SD card files
+  FileSystemAccess:
+    - DirectSdmc
+    - SaveData
+
