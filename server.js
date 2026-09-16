@@ -1,0 +1,61 @@
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    console.log(`[Badge Arcade Test Connection] Path: ${req.url}`);
+    
+    // Send standard 3DS system JSON data headers
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+
+    // --- 1. PLAY CHECK ROUTE (Pings immediately upon entry) ---
+    if (req.url === '/v1/badge_arcade/user/status') {
+        res.end(JSON.stringify({
+            status: "authenticated",
+            remaining_plays: 10,        // Instantly loads 10 plays for Nico to test with!
+            total_badges_owned: 15,
+            daily_free_play_used: false
+        }));
+    }
+    
+    // --- 2. THE PLAY BUYING HANDSHAKE (Pings when hitting the payment button) ---
+    else if (req.url === '/v1/badge_arcade/purchase/simulated' || req.url.includes('purchase')) {
+        console.log(`[⚠️ TEST TRIGGER] Nico initiated a simulated play packet purchase transaction!`);
+        res.end(JSON.stringify({
+            transaction_status: "SUCCESS",
+            added_plays: 10,           // Simulates adding a 10-play token bundle
+            new_play_total: 20,
+            error_code: 0,
+            message: "Simulated payment accepted by the backend. Account database tokens updated."
+        }));
+    }
+    
+    // --- 3. STOREFRONT SHELF ROUTE (Sets up what badges show up) ---
+    else if (req.url === '/v1/badge_arcade/catchers/active') {
+        res.end(JSON.stringify({
+            total_catchers: 1,
+            catchers: [
+                { id: "test_catcher_01", name: "Revivetendo Test Catcher", badge_count: 3, active: true }
+            ]
+        }));
+    }
+    
+    // --- DEFAULT ROOT PATH ---
+    else {
+        res.end(JSON.stringify({ system: "Revivetendo 3DS Test Gateway", status: "Active & Listening" }));
+    }
+});
+
+// Broadcast across your whole network on port 8080
+server.listen(8080, '0.0.0.0', () => {
+    console.log('\x1b[32m%s\x1b[0m', '===================================================================');
+    console.log('\x1b[36m%s\x1b[0m', '  ____              _             ____  _                       ');
+    console.log('\x1b[36m%s\x1b[0m', ' |  _ \\ _____   ___(_)_   _____  / ___|| |__   ___  _ __        ');
+    console.log('\x1b[36m%s\x1b[0m', ' | |_) / _ \\ \\ / / | \\ \\ / / _ \\ \\___ \\| \'_ \\ / _ \\| \'_ \\       ');
+    console.log('\x1b[36m%s\x1b[0m', ' |  _ <  __/\\ V /| | |\\ V /  __/  ___) | | | | (_) | |_) |      ');
+    console.log('\x1b[36m%s\x1b[0m', ' |_| \\_\\___| \\_/ |_|_| \\_/ \\___| |____/|_| |_|\\___/| .__/       ');
+    console.log('\x1b[36m%s\x1b[0m', '                                                   |_|          ');
+    console.log('\x1b[32m%s\x1b[0m', '===================================================================');
+    console.log('\x1b[33m%s\x1b[0m', ' -> ReviveShop 3DS Test Core Environment is Online!');
+    console.log('\x1b[35m%s\x1b[0m', ' -> Awaiting Nico Verification at 192.168.4.34:8080');
+    console.log('\x1b[32m%s\x1b[0m', '===================================================================');
+});
+
