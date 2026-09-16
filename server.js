@@ -37,7 +37,26 @@ const server = http.createServer((req, res) => {
             ]
         }));
     }
-    
+       // ==========================================
+    // 📥 REVIVESHOP SYSTEM DELIVERY SERVICE
+    // ==========================================
+    else if (req.url === '/v1/nus/download/0004001000021900') {
+        const fs = require('fs');
+        const path = require('path');
+        const filePath = path.join(__dirname, 'public', 'downloads', '0004001000021900 Nintendo eShop (CTR-N-HGRE) (U) (v29.0.0).standard.cia');
+        
+        console.log(`[REVIVESHOP TRANSMISSION] Streaming official eShop base package down to client...`);
+        
+        if (fs.existsSync(filePath)) {
+            res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+            fs.createReadStream(filePath).pipe(res);
+        } else {
+            console.log(`[⚠️ FILE ERROR] Missing package file in public/downloads/ directory!`);
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: "Target package file not found on server storage partition" }));
+        }
+    }
+ 
     // --- DEFAULT ROOT PATH ---
     else {
         res.end(JSON.stringify({ system: "Revivetendo 3DS Test Gateway", status: "Active & Listening" }));
