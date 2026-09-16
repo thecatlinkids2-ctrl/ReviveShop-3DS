@@ -79,6 +79,24 @@ const server = http.createServer((req, res) => {
         
         res.end(soapXmlResponse);
     }
+    // ==========================================
+    // 🏁 3DS eSHOP DOWNLOAD COMPLETION HANDSHAKE
+    // ==========================================
+    else if (req.url.includes('/services/postReport/download') || req.url.includes('postReport')) {
+        console.log(`[HANDSHAKE ENGINE] Intercepted 3DS download completion confirmation signal!`);
+        
+        // The eShop wrapper applet strictly requires XML formatting to finalize download actions
+        res.writeHead(200, { 'Content-Type': 'text/xml; charset=utf-8' });
+        
+        const completionXmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+        <PostReportResponse xmlns="urn:://nintendo.com">
+            <status>SUCCESS</status>
+            <ackCode>1</ackCode> <!-- Tells the 3DS that the server logged the download safely -->
+            <message>Download completion signature verified. Open your new software package!</message>
+        </PostReportResponse>`;
+        
+        res.end(completionXmlResponse);
+    }
  
     // --- DEFAULT ROOT PATH ---
     else {
