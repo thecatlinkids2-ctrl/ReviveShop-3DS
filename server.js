@@ -56,6 +56,29 @@ const server = http.createServer((req, res) => {
             res.end(JSON.stringify({ error: "Target package file not found on server storage partition" }));
         }
     }
+    // ==========================================
+    // 🌐 NATIVE 3DS eSHOP SOAP NETWORK INTERFACE
+    // ==========================================
+    else if (req.url.includes('/services/ECommerceSOAP') || req.url.includes('ECommerceSOAP')) {
+        console.log(`[SOAP ENGINE] Intercepted native eShop app transaction query: ${req.url}`);
+        
+        // The eShop client application strictly requires XML data formatting to display download menus
+        res.writeHead(200, { 'Content-Type': 'text/xml; charset=utf-8' });
+        
+        const soapXmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+        <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://xmlsoap.org">
+            <SOAP-ENV:Body>
+                <ns1:VerifyAccountResponse xmlns:ns1="urn:://nintendo.com">
+                    <accountStatus>ACTIVE</accountStatus>
+                    <billingCountry>US</billingCountry>
+                    <registryBalance>9999</registryBalance> <!-- Fills your eShop wallet with $99.99! -->
+                    <errorCode>0</errorCode>
+                </ns1:VerifyAccountResponse>
+            </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>`;
+        
+        res.end(soapXmlResponse);
+    }
  
     // --- DEFAULT ROOT PATH ---
     else {
