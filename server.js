@@ -37,6 +37,34 @@ const server = http.createServer((req, res) => {
             ]
         }));
     }
+
+    // --- 4. EXCLUSIVE BADGE ARCADE CATALOG ENGINE ---
+    else if (req.url.startsWith('/services/catalog/title/') || req.url.includes('catalog')) {
+        console.log(`[CATALOG SERVICE] Generating authentic 3DS description card for Nintendo Badge Arcade`);
+        res.writeHead(200, { 'Content-Type': 'text/xml; charset=utf-8' });
+        
+        const catalogXmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+        <CatalogResponse xmlns="urn:://nintendo.com">
+            <titleInfo>
+                <titleId>0004000000140200</titleId>
+                <name>Nintendo Badge Arcade (Revivetendo Edition)</name>
+                <publisher>Nintendo / Revivetendo</publisher>
+                <platform>Nintendo 3DS</platform>
+                <contentRating>ESRB: E</contentRating>
+                <blockCount>542</blockCount>
+                <downloadAttributes>
+                    <isDownloadable>true</isDownloadable>
+                    <requiresTicket>true</requiresTicket>
+                    <ticketUrl>http://192.168.4</ticketUrl>
+                    <contentStreamUrl>http://192.168.4</contentStreamUrl>
+                </downloadAttributes>
+                <description>Welcome to the ultimate custom claw crane arcade! Grab badges to customize your 3DS Home Menu layout grid, test your skills on custom catcher layouts, and buy extra play tokens natively right from your ReviveShop network hub.</description>
+            </titleInfo>
+        </CatalogResponse>`;
+        
+        res.end(catalogXmlResponse);
+    }
+
        // ==========================================
     // 📥 REVIVESHOP SYSTEM DELIVERY SERVICE
     // ==========================================
@@ -118,4 +146,5 @@ server.listen(8080, '0.0.0.0', () => {
     console.log('\x1b[35m%s\x1b[0m', ' -> Awaiting Nico Verification at 192.168.4.34:8080');
     console.log('\x1b[32m%s\x1b[0m', '===================================================================');
 });
+
 
